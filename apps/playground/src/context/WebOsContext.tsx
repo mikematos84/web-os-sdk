@@ -7,7 +7,7 @@ import {
   useEffect,
   ReactNode,
 } from "react";
-import { initialize, WebOsCore, WebOsOptions } from "@webos/core";
+import { initialize, WebOsCore, WebOsOptions } from "@web-os/core";
 
 // Define the context interface
 interface WebOsContextType {

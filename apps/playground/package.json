@@ -6,12 +6,15 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "rimraf dist .next",
+    "reset": "pnpm run clean && rimraf node_modules"
   },
   "dependencies": {
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.3"
+    "next": "15.5.3",
+    "@web-os/core": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5",
@@ -20,7 +23,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "@eslint/eslintrc": "^3",
-    "@webos/core": "workspace:*"
+    "@eslint/eslintrc": "^3"
   }
 }
