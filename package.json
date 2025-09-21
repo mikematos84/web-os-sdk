@@ -1,0 +1,38 @@
+{
+  "name": "web-os-sdk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "e2e": "cypress open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.17.0",
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^12.1.4",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^24.5.2",
+    "cypress": "^15.2.0",
+    "jest": "^30.1.3",
+    "rollup": "^4.52.0",
+    "rollup-plugin-dts": "^6.2.3",
+    "rollup-plugin-terser": "^7.0.2",
+    "ts-jest": "^29.4.4",
+    "ts-node": "^10.9.2",
+    "turbo": "^2.5.6",
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.2",
+    "@mui/material": "^7.3.2"
+  }
+}
