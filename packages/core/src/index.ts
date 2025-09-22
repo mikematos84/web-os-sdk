@@ -1,3 +1,8 @@
+import { AppBar } from "@mui/material";
+
+// Re-export components
+export * from "./components";
+
 export interface WebOsOptions {
   mount?: string; // e.g. CSS selector
   theme?: "light" | "dark";
@@ -23,26 +28,25 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
         return;
       }
 
-      const container = document.querySelector(options.mount || "body");
-      if (!container) throw new Error("Mount element not found");
-
-      // Check if root element already exists
-      let root = document.getElementById("webos-root");
-      if (root) {
+      // In a non-browser environment, return a mock instance
+      if (typeof document === "undefined") {
         console.warn(
-          "WebOS root element already exists. Reusing existing element.",
+          "WebOS SDK initialization skipped: Not in browser environment",
         );
-      } else {
-        // Create new root element
-        root = document.createElement("div");
-        root.id = "webos-root";
-        root.innerText = `WebOS Initialized (theme=${options.theme || "light"})`;
-        container.appendChild(root);
+        const mockCore: WebOsCore = {
+          destroy: () => {},
+          version: "0.0.1",
+        };
+        instance = mockCore;
+        resolve(mockCore);
+        return;
       }
+
+      // Since we're now providing a React component to be rendered by the consumer,
+      // we don't need to do DOM manipulation here.
 
       const core: WebOsCore = {
         destroy: () => {
-          root?.remove();
           instance = null;
           if (typeof window !== "undefined") {
             delete (window as any).webOsCore;
