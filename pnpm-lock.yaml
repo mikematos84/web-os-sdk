@@ -67,7 +67,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  apps/nextjs-app-playground:
+  apps/next-app:
     dependencies:
       next:
         specifier: 15.5.3
@@ -104,7 +104,7 @@ importers:
         specifier: ^5
         version: 5.9.2
 
-  apps/vanilla-js-playground:
+  apps/vite-app:
     dependencies:
       '@web-os/core':
         specifier: workspace:*
