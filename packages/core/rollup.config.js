@@ -15,7 +15,7 @@ const pkg = JSON.parse(
 );
 
 export default [
-  // JS builds
+  // Universal builds (ESM and CJS) - works in both React and vanilla environments
   {
     input: "src/index.ts",
     output: [
@@ -29,18 +29,25 @@ export default [
         format: "cjs",
         sourcemap: true,
       },
-      {
-        file: "dist/core.umd.js",
-        format: "umd",
-        name: "webOs",
-        sourcemap: true,
-        globals: {
-          react: "React",
-          "react-dom": "ReactDOM",
-        },
-      },
     ],
-    external: ["react", "react-dom"], // don’t bundle React
+    external: ["react", "react-dom"], // don't bundle React
+    plugins: [typescript({ tsconfig: "./tsconfig.json" }), terser()],
+  },
+
+  // UMD build for browser usage (works in both React and vanilla environments)
+  {
+    input: "src/index.ts",
+    output: {
+      file: "dist/core.umd.js",
+      format: "umd",
+      name: "WebOsCore",
+      sourcemap: true,
+      globals: {
+        react: "React",
+        "react-dom": "ReactDOM",
+      },
+    },
+    external: ["react", "react-dom"],
     plugins: [typescript({ tsconfig: "./tsconfig.json" }), terser()],
   },
 
