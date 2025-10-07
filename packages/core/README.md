@@ -13,14 +13,14 @@ pnpm add @web-os/core
 ### React/Next.js
 
 ```tsx
-import { initialize, WebOsAppBar } from '@web-os/core';
+import { initialize, AppBarContainer } from '@web-os/core';
 
 function App() {
   useEffect(() => {
     initialize({ theme: 'light' });
   }, []);
 
-  return <WebOsAppBar theme="light" />;
+  return <AppBarContainer theme="light" />;
 }
 ```
 
@@ -32,14 +32,14 @@ import { initialize } from '@web-os/core';
 async function initApp() {
   const webOsCore = await initialize({ theme: 'light' });
   
-  // Create an app bar
+  // Create an app bar (includes integrated info panel button)
   webOsCore.createAppBar('#app', { theme: 'light' });
   
-  // Create a window
-  const window = webOsCore.createWindow({ 
-    title: 'My Window', 
-    width: 400, 
-    height: 300 
+  // Show information panel
+  webOsCore.showInfoPanel({
+    title: 'Information',
+    content: 'This is an information panel.',
+    theme: 'light'
   });
 }
 ```
@@ -60,12 +60,14 @@ async function initApp() {
 ### Universal API
 
 - `initialize(options)` - Initialize the WebOS SDK (works in all environments)
-- `createAppBar(container, options)` - Create an app bar (vanilla JS only)
-- `createWindow(options)` - Create a draggable window (vanilla JS only)
+- `createAppBar(container, options)` - Create an app bar with integrated info panel button (vanilla JS only)
+- `showInfoPanel(options)` - Show information panel (vanilla JS only)
+- `hideInfoPanel()` - Hide information panel (vanilla JS only)
 
 ### React Components
 
-- `WebOsAppBar` - A Material-UI based app bar component
+- `AppBarContainer` - A Material-UI based app bar component with integrated info panel button
+- `InfoPanel` - A Material-UI based information panel component
 
 ## Build Outputs
 

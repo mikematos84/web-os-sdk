@@ -10,35 +10,12 @@ let webOsCore: any = null;
 async function initWebOS() {
   try {
     webOsCore = await initialize({ theme: 'light' });
-    console.log('WebOS SDK initialized successfully');
-    
-    // Create app bar
+
+    // Create app bar (now includes integrated info panel button)
     webOsCore.createAppBar('#app', { theme: 'light' });
     
-    // Create a sample window
-    const window = webOsCore.createWindow({ 
-      title: 'WebOS Window', 
-      width: 400, 
-      height: 300 
-    });
-    
-    // Add some content to the window
-    const content = window.querySelector('div:last-child');
-    if (content) {
-      content.innerHTML = `
-        <h3>Welcome to WebOS!</h3>
-        <p>This is a vanilla JavaScript implementation of the WebOS SDK.</p>
-        <button id="window-counter" type="button">Click me!</button>
-      `;
-      
-      // Setup counter in the window
-      const windowCounter = content.querySelector('#window-counter') as HTMLButtonElement;
-      if (windowCounter) {
-        setupCounter(windowCounter);
-      }
-    }
   } catch (error) {
-    console.error('Failed to initialize WebOS SDK:', error);
+    // Error logging is handled by the core initialize function
   }
 }
 
@@ -54,9 +31,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div class="card">
       <button id="counter" type="button"></button>
     </div>
-    <p class="read-the-docs">
-      WebOS SDK running in vanilla JavaScript environment
-    </p>
   </div>
 `
 

@@ -30,7 +30,7 @@ export default [
         sourcemap: true,
       },
     ],
-    external: ["react", "react-dom"], // don't bundle React
+    external: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "@mui/material", "@mui/icons-material"], // don't bundle React and MUI
     plugins: [typescript({ tsconfig: "./tsconfig.json" }), terser()],
   },
 
@@ -45,9 +45,13 @@ export default [
       globals: {
         react: "React",
         "react-dom": "ReactDOM",
+        "react-dom/client": "ReactDOMClient",
+        "react/jsx-runtime": "jsxRuntime",
+        "@mui/material": "MaterialUI",
+        "@mui/icons-material": "MaterialUIIcons",
       },
     },
-    external: ["react", "react-dom"],
+    external: ["react", "react-dom", "react-dom/client", "react/jsx-runtime", "@mui/material", "@mui/icons-material"],
     plugins: [typescript({ tsconfig: "./tsconfig.json" }), terser()],
   },
 

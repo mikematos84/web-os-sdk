@@ -1,6 +1,15 @@
 // Re-export React components
 export * from "./components";
 
+// Export version
+export { VERSION } from "./constants";
+
+// Import React for rendering
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { AppBarContainer } from './components/AppBarContainer';
+import { InfoPanel } from './components/InfoPanel';
+
 // Shared types
 export interface WebOsOptions {
   mount?: string; // e.g. CSS selector
@@ -11,11 +20,16 @@ export interface WebOsCore {
   destroy: () => void;
   version: string;
   createAppBar?: (container: string | HTMLElement, options?: { theme?: "light" | "dark" }) => void;
-  createWindow?: (options?: { title?: string; width?: number; height?: number }) => HTMLElement;
+  showInfoPanel?: (options?: { title?: string; content?: string | React.ReactNode; theme?: "light" | "dark" }) => void;
+  hideInfoPanel?: () => void;
 }
 
 // Keep track of the single instance
 let instance: WebOsCore | null = null;
+
+// Keep track of info panel state
+let infoPanelRoot: any = null;
+let infoPanelContainer: HTMLElement | null = null;
 
 // Universal initialize function that works in both React and vanilla environments
 export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
@@ -39,7 +53,8 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
           destroy: () => {},
           version: "0.0.1",
           createAppBar: () => {},
-          createWindow: () => document.createElement('div'),
+          showInfoPanel: () => {},
+          hideInfoPanel: () => {},
         };
         instance = mockCore;
         resolve(mockCore);
@@ -65,77 +80,68 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
             return;
           }
 
-          const appBar = document.createElement('div');
-          appBar.style.cssText = `
+          // Create a container div for the React component
+          const appBarContainer = document.createElement('div');
+          targetElement.appendChild(appBarContainer);
+
+          // Render the React component
+          const root = createRoot(appBarContainer);
+          root.render(React.createElement(AppBarContainer, { theme: options.theme }));
+        },
+        showInfoPanel: (options: { title?: string; content?: string | React.ReactNode; theme?: "light" | "dark" } = {}) => {
+          // Hide existing panel if open
+          if (infoPanelRoot) {
+            infoPanelRoot.unmount();
+            infoPanelRoot = null;
+          }
+          if (infoPanelContainer) {
+            infoPanelContainer.remove();
+            infoPanelContainer = null;
+          }
+
+          // Create container for info panel
+          infoPanelContainer = document.createElement('div');
+          infoPanelContainer.style.cssText = `
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            height: 64px;
-            background-color: ${options.theme === 'dark' ? '#1976d2' : '#2196f3'};
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            bottom: 0;
+            z-index: 9999;
+            pointer-events: none;
           `;
+          document.body.appendChild(infoPanelContainer);
 
-          const title = document.createElement('h1');
-          title.textContent = 'WebOS';
-          title.style.cssText = `
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 500;
-          `;
-
-          appBar.appendChild(title);
-          targetElement.appendChild(appBar);
+          // Create React root and render info panel
+          infoPanelRoot = createRoot(infoPanelContainer);
+          infoPanelRoot.render(
+            React.createElement(InfoPanel, {
+              open: true,
+              onClose: () => {
+                if (infoPanelRoot) {
+                  infoPanelRoot.unmount();
+                  infoPanelRoot = null;
+                }
+                if (infoPanelContainer) {
+                  infoPanelContainer.remove();
+                  infoPanelContainer = null;
+                }
+              },
+              title: options.title,
+              content: options.content,
+              theme: options.theme,
+            })
+          );
         },
-        createWindow: (options: { title?: string; width?: number; height?: number } = {}) => {
-          const window = document.createElement('div');
-          window.style.cssText = `
-            position: fixed;
-            top: 80px;
-            left: 20px;
-            width: ${options.width || 400}px;
-            height: ${options.height || 300}px;
-            background: white;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 100;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            display: flex;
-            flex-direction: column;
-          `;
-
-          const titleBar = document.createElement('div');
-          titleBar.style.cssText = `
-            background: #f5f5f5;
-            padding: 8px 16px;
-            border-bottom: 1px solid #ddd;
-            border-radius: 8px 8px 0 0;
-            font-weight: 500;
-            font-size: 0.875rem;
-            color: #333;
-          `;
-          titleBar.textContent = options.title || 'Window';
-
-          const content = document.createElement('div');
-          content.style.cssText = `
-            flex: 1;
-            padding: 16px;
-            overflow: auto;
-          `;
-          content.textContent = 'Window content goes here';
-
-          window.appendChild(titleBar);
-          window.appendChild(content);
-
-          document.body.appendChild(window);
-          return window;
+        hideInfoPanel: () => {
+          if (infoPanelRoot) {
+            infoPanelRoot.unmount();
+            infoPanelRoot = null;
+          }
+          if (infoPanelContainer) {
+            infoPanelContainer.remove();
+            infoPanelContainer = null;
+          }
         }
       };
 
@@ -147,8 +153,12 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
         (window as any).webOsCore = core;
       }
 
+      // Log successful initialization
+      console.info("WebOS SDK initialized successfully");
+
       resolve(core);
     } catch (err) {
+      console.error("Failed to initialize WebOS SDK:", err);
       reject(err);
     }
   });
