@@ -67,7 +67,7 @@ importers:
         specifier: ^5.9.2
         version: 5.9.2
 
-  apps/next-app:
+  apps/example-next-app:
     dependencies:
       next:
         specifier: 15.5.3
@@ -104,7 +104,7 @@ importers:
         specifier: ^5
         version: 5.9.2
 
-  apps/vite-app:
+  apps/example-vite-app:
     dependencies:
       '@web-os/core':
         specifier: workspace:*
