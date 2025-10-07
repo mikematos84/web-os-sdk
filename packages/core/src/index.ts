@@ -5,6 +5,7 @@ export * from "./components";
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { WebOsAppBar } from './components/WebOsAppBar';
+import { WebOsInfoPanel } from './components/WebOsInfoPanel';
 
 // Shared types
 export interface WebOsOptions {
@@ -17,10 +18,16 @@ export interface WebOsCore {
   version: string;
   createAppBar?: (container: string | HTMLElement, options?: { theme?: "light" | "dark" }) => void;
   createWindow?: (options?: { title?: string; width?: number; height?: number }) => HTMLElement;
+  showInfoPanel?: (options?: { title?: string; content?: string | React.ReactNode; theme?: "light" | "dark" }) => void;
+  hideInfoPanel?: () => void;
 }
 
 // Keep track of the single instance
 let instance: WebOsCore | null = null;
+
+// Keep track of info panel state
+let infoPanelRoot: any = null;
+let infoPanelContainer: HTMLElement | null = null;
 
 // Universal initialize function that works in both React and vanilla environments
 export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
@@ -45,6 +52,8 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
           version: "0.0.1",
           createAppBar: () => {},
           createWindow: () => document.createElement('div'),
+          showInfoPanel: () => {},
+          hideInfoPanel: () => {},
         };
         instance = mockCore;
         resolve(mockCore);
@@ -121,6 +130,61 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
 
           document.body.appendChild(window);
           return window;
+        },
+        showInfoPanel: (options: { title?: string; content?: string | React.ReactNode; theme?: "light" | "dark" } = {}) => {
+          // Hide existing panel if open
+          if (infoPanelRoot) {
+            infoPanelRoot.unmount();
+            infoPanelRoot = null;
+          }
+          if (infoPanelContainer) {
+            infoPanelContainer.remove();
+            infoPanelContainer = null;
+          }
+
+          // Create container for info panel
+          infoPanelContainer = document.createElement('div');
+          infoPanelContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 9999;
+            pointer-events: none;
+          `;
+          document.body.appendChild(infoPanelContainer);
+
+          // Create React root and render info panel
+          infoPanelRoot = createRoot(infoPanelContainer);
+          infoPanelRoot.render(
+            React.createElement(WebOsInfoPanel, {
+              open: true,
+              onClose: () => {
+                if (infoPanelRoot) {
+                  infoPanelRoot.unmount();
+                  infoPanelRoot = null;
+                }
+                if (infoPanelContainer) {
+                  infoPanelContainer.remove();
+                  infoPanelContainer = null;
+                }
+              },
+              title: options.title,
+              content: options.content,
+              theme: options.theme,
+            })
+          );
+        },
+        hideInfoPanel: () => {
+          if (infoPanelRoot) {
+            infoPanelRoot.unmount();
+            infoPanelRoot = null;
+          }
+          if (infoPanelContainer) {
+            infoPanelContainer.remove();
+            infoPanelContainer = null;
+          }
         }
       };
 
