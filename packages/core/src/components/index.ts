@@ -1,2 +1,2 @@
-export { WebOsAppBar } from './WebOsAppBar';
-export { WebOsInfoPanel } from './WebOsInfoPanel';
+export { AppBarContainer } from './AppBarContainer';
+export { InfoPanel } from './InfoPanel';

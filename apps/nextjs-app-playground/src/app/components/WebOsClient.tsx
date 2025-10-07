@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initialize, WebOsAppBar } from "@web-os/core";
+import { initialize, AppBarContainer } from "@web-os/core";
 
 export function WebOsClient() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
@@ -32,5 +32,5 @@ export function WebOsClient() {
     }
   };
 
-  return <WebOsAppBar theme={theme} onInfoPanelClick={handleInfoPanelClick} />;
+  return <AppBarContainer theme={theme} onInfoPanelClick={handleInfoPanelClick} />;
 }

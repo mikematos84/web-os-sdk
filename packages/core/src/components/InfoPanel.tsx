@@ -10,8 +10,9 @@ import {
   IconButton,
 } from "@mui/material";
 import { Close as CloseIcon } from "@mui/icons-material";
+import { VERSION } from "../constants";
 
-export interface WebOsInfoPanelProps {
+export interface InfoPanelProps {
   open: boolean;
   onClose: () => void;
   title?: string;
@@ -19,13 +20,14 @@ export interface WebOsInfoPanelProps {
   theme?: "light" | "dark";
 }
 
-export const WebOsInfoPanel: React.FC<WebOsInfoPanelProps> = ({
+export const InfoPanel: React.FC<InfoPanelProps> = ({
   open,
   onClose,
-  title = "Information",
-  content = "This is an information panel.",
+  title = "WebOS SDK Information",
+  content,
   theme = "light",
 }) => {
+  const version = VERSION;
   return (
     <Dialog
       open={open}
@@ -67,12 +69,27 @@ export const WebOsInfoPanel: React.FC<WebOsInfoPanelProps> = ({
       
       <DialogContent sx={{ padding: "24px" }}>
         <Box>
-          {typeof content === "string" ? (
-            <Typography variant="body1" color="text.primary">
-              {content}
+          {/* Version Information */}
+          <Box sx={{ marginBottom: content ? "16px" : "0" }}>
+            <Typography variant="h6" color="text.primary" sx={{ marginBottom: "8px" }}>
+              WebOS SDK
             </Typography>
-          ) : (
-            content
+            <Typography variant="body2" color="text.secondary">
+              Version: {version}
+            </Typography>
+          </Box>
+          
+          {/* Custom Content */}
+          {content && (
+            <Box sx={{ borderTop: `1px solid ${theme === "dark" ? "#333" : "#e0e0e0"}`, paddingTop: "16px" }}>
+              {typeof content === "string" ? (
+                <Typography variant="body1" color="text.primary">
+                  {content}
+                </Typography>
+              ) : (
+                content
+              )}
+            </Box>
           )}
         </Box>
       </DialogContent>
