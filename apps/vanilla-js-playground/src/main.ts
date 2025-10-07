@@ -10,8 +10,7 @@ let webOsCore: any = null;
 async function initWebOS() {
   try {
     webOsCore = await initialize({ theme: 'light' });
-    console.log('WebOS SDK initialized successfully');
-    
+
     // Create app bar
     webOsCore.createAppBar('#app', { theme: 'light' });
     
@@ -38,7 +37,7 @@ async function initWebOS() {
       }
     }
   } catch (error) {
-    console.error('Failed to initialize WebOS SDK:', error);
+    // Error logging is handled by the core initialize function
   }
 }
 

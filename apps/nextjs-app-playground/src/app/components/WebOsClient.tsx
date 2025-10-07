@@ -9,10 +9,10 @@ export function WebOsClient() {
     // Initialize your webOS application here
     initialize({ theme })
       .then(() => {
-        console.info("WebOS application initialized");
+        // Success logging is handled by the core initialize function
       })
       .catch((error) => {
-        console.error("Failed to initialize WebOS application:", error);
+        // Error logging is handled by the core initialize function
       });
 
     // Cleanup function

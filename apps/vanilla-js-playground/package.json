@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@web-os/core": "workspace:*"
+    "@web-os/core": "workspace:*",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

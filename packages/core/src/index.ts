@@ -1,6 +1,11 @@
 // Re-export React components
 export * from "./components";
 
+// Import React for rendering
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { WebOsAppBar } from './components/WebOsAppBar';
+
 // Shared types
 export interface WebOsOptions {
   mount?: string; // e.g. CSS selector
@@ -65,33 +70,13 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
             return;
           }
 
-          const appBar = document.createElement('div');
-          appBar.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
-            background-color: ${options.theme === 'dark' ? '#1976d2' : '#2196f3'};
-            color: white;
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            z-index: 1000;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-          `;
+          // Create a container div for the React component
+          const appBarContainer = document.createElement('div');
+          targetElement.appendChild(appBarContainer);
 
-          const title = document.createElement('h1');
-          title.textContent = 'WebOS';
-          title.style.cssText = `
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 500;
-          `;
-
-          appBar.appendChild(title);
-          targetElement.appendChild(appBar);
+          // Render the React component
+          const root = createRoot(appBarContainer);
+          root.render(React.createElement(WebOsAppBar, { theme: options.theme }));
         },
         createWindow: (options: { title?: string; width?: number; height?: number } = {}) => {
           const window = document.createElement('div');
@@ -147,8 +132,12 @@ export async function initialize(options: WebOsOptions): Promise<WebOsCore> {
         (window as any).webOsCore = core;
       }
 
+      // Log successful initialization
+      console.info("WebOS SDK initialized successfully");
+
       resolve(core);
     } catch (err) {
+      console.error("Failed to initialize WebOS SDK:", err);
       reject(err);
     }
   });
