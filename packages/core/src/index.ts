@@ -17,15 +17,13 @@ export interface WebOs {
 }
 
 
-function createSdkInstance(options: WebOsOptions & Partial<WebOs>): WebOs {
-  return {
-    destroy: () => {},
-    logger: logger,
-    version: "0.0.1",
-    name: SDK_NAME,
-    ...options,
-  };
-}
+// Base SDK instance
+export const baseSdk: WebOs = {
+  destroy: () => {},
+  logger: logger,
+  version: "0.0.1",
+  name: SDK_NAME,
+};
 
 // Keep track of the single instance
 let instance: WebOs | null = null;
@@ -37,7 +35,7 @@ export async function initialize(options: WebOsOptions): Promise<WebOs> {
       // If an instance already exists, return it
       if (instance) {
         logger.warn(
-          "Already initialized. Returning existing instance.",
+          "WebOS SDK is already initialized. Returning existing instance.",
         );
         resolve(instance);
         return;
@@ -46,22 +44,23 @@ export async function initialize(options: WebOsOptions): Promise<WebOs> {
       // In a non-browser environment, return a mock instance
       if (typeof document === "undefined") {
         logger.warn(
-          "initialization skipped: Not in browser environment",
+          "WebOS SDK initialization skipped: Not in browser environment",
         );
-        const mockSdk: WebOs = createSdkInstance({});
+        const mockSdk: WebOs = baseSdk;
         instance = mockSdk;
         resolve(mockSdk);
         return;
       }
 
-      const sdk: WebOs =  createSdkInstance({
+      const sdk: WebOs =  {
+        ...baseSdk,
         destroy: () => {
           instance = null;
           if (typeof window !== "undefined") {
             delete (window as any).webos;
           }
         },
-      });
+      };
 
       instance = sdk;
 

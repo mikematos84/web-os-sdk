@@ -1,14 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initialize } from "@web-os/core";
+import { initialize, type WebOs } from "@web-os/core";
 
 export function WebOsClient() {
   const [theme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
+    let webOs: WebOs | null = null;
     // Initialize your webOS application here
     initialize({ theme })
-      .then(() => {
+      .then((sdk) => {
+        webOs = sdk;
         // Do something with the WebOS SDK
       })
       .catch((error) => {
@@ -17,8 +19,8 @@ export function WebOsClient() {
 
     // Cleanup function
     return () => {
-      if ((window as any).webos) {
-        (window as any).webos.destroy();
+      if (webOs) {
+        webOs.destroy();
       }
     };
   }, [theme]);
