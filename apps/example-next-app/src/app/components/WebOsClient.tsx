@@ -1,36 +1,27 @@
 "use client";
 import { useEffect, useState } from "react";
-import { initialize, AppBarContainer } from "@web-os/core";
+import { initialize } from "@web-os/core";
 
 export function WebOsClient() {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
-  const [webOsCore, setWebOsCore] = useState<any>(null);
+  const [theme] = useState<"light" | "dark">("light");
 
   useEffect(() => {
     // Initialize your webOS application here
     initialize({ theme })
-      .then((core) => {
-        setWebOsCore(core);
+      .then(() => {
+        // Do something with the WebOS SDK
       })
       .catch((error) => {
-        // Error logging is handled by the core initialize function
+        console.error('Failed to initialize WebOS SDK:', error);
       });
 
     // Cleanup function
     return () => {
-      // Any cleanup if needed
+      if ((window as any).webos) {
+        (window as any).webos.destroy();
+      }
     };
   }, [theme]);
 
-  const handleInfoPanelClick = () => {
-    if (webOsCore) {
-      webOsCore.showInfoPanel({
-        title: 'WebOS Information',
-        content: 'This is a sample information panel created with the WebOS SDK in Next.js. You can display any content here, including HTML elements and React components.',
-        theme: theme
-      });
-    }
-  };
-
-  return <AppBarContainer theme={theme} onInfoPanelClick={handleInfoPanelClick} />;
+  return null;
 }

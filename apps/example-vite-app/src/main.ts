@@ -5,22 +5,15 @@ import { setupCounter } from './counter.ts'
 import { initialize } from '@web-os/core'
 
 // Initialize WebOS SDK
-let webOsCore: any = null;
-
-async function initWebOS() {
-  try {
-    webOsCore = await initialize({ theme: 'light' });
-
-    // Create app bar (now includes integrated info panel button)
-    webOsCore.createAppBar('#app', { theme: 'light' });
-    
-  } catch (error) {
-    // Error logging is handled by the core initialize function
-  }
-}
+initialize({ theme: 'light' })
+  .then(() => {
+    // Do something with the WebOS SDK
+  }).catch((error) => {
+    console.error('Failed to initialize WebOS SDK:', error);
+  }); 
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
+  <div style="padding-top: 60px;">
     <a href="https://vite.dev" target="_blank">
       <img src="${viteLogo}" class="logo" alt="Vite logo" />
     </a>
@@ -35,6 +28,3 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 `
 
 setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
-
-// Initialize WebOS after DOM is ready
-initWebOS();
