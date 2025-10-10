@@ -7,16 +7,33 @@
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.esm.js",
-      "require": "./dist/index.cjs.js",
+      "import": "./dist/index.react.esm.js",
+      "require": "./dist/index.react.cjs.js",
       "types": "./dist/index.d.ts"
     },
-    "./umd": "./dist/core.umd.js"
+    "./standalone": {
+      "import": "./dist/index.standalone.esm.js",
+      "require": "./dist/index.standalone.cjs.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./umd": "./dist/index.umd.js"
   },
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
     "clean": "rimraf dist",
     "reset": "pnpm run clean && rimraf node_modules"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@mui/material": "^6.0.0",
+    "@mui/icons-material": "^6.0.0",
+    "@emotion/react": "^11.0.0",
+    "@emotion/styled": "^11.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.0.0",
+    "@rollup/plugin-replace": "^5.0.0"
   }
 }
