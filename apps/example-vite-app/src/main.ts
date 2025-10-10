@@ -2,12 +2,13 @@ import './style.css'
 import typescriptLogo from './typescript.svg'
 import viteLogo from '/vite.svg'
 import { setupCounter } from './counter.ts'
-import { initialize } from '@web-os/core'
+import { initialize } from '@web-os/core/standalone'
 
 // Initialize WebOS SDK
 initialize({ theme: 'light' })
-  .then(() => {
+  .then((sdk) => {
     // Do something with the WebOS SDK
+    sdk.mountPanel("app-bar");
   }).catch((error) => {
     console.error('Failed to initialize WebOS SDK:', error);
   }); 

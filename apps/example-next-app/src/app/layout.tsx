@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { WebOsClient } from "./components/WebOsClient";
+import { WebOsProvider } from "./context/WebOsProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,8 +29,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable}`}
         suppressHydrationWarning={true}
       >
-        {children}
-        <WebOsClient />
+        <WebOsProvider>
+          {children}
+        </WebOsProvider>
       </body>
     </html>
   );

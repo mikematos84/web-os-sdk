@@ -1,5 +1,8 @@
-import { SDK_NAME } from "./constants";
+import { ComponentType } from "react";
+import { ROOT_ELEMENT_ID, SDK_NAME } from "./constants";
 import { logger, type Logger } from "./libs/logger";
+import { mountPanel, mountedPanels, unmountPanel } from "./libs/panel-manager";
+import { PanelProps } from "./types";
 
 // Export version
 export { SDK_NAME, VERSION } from "./constants";
@@ -14,6 +17,10 @@ export interface WebOs {
   name: string;
   version: string;
   logger: Logger;
+  root: string,
+  mountPanel: typeof mountPanel;
+  unmountPanel: typeof unmountPanel;
+  mountedPanels: Map<string, ComponentType<PanelProps>>;
 }
 
 
@@ -23,6 +30,10 @@ export const baseSdk: WebOs = {
   logger: logger,
   version: "0.0.1",
   name: SDK_NAME,
+  root: ROOT_ELEMENT_ID,
+  mountPanel,
+  unmountPanel,
+  mountedPanels,
 };
 
 // Keep track of the single instance
@@ -69,6 +80,15 @@ export async function initialize(options: WebOsOptions): Promise<WebOs> {
         (window as any).webos = instance;
       }
 
+      // Attach the root element to the documents
+      const rootElement = document.getElementById(ROOT_ELEMENT_ID);
+      if (!rootElement) {
+        const rootElement = document.createElement("div");
+        rootElement.id = ROOT_ELEMENT_ID;
+        rootElement.setAttribute("data-testid", ROOT_ELEMENT_ID);
+        document.body.appendChild(rootElement);
+      }
+
       // Log successful initialization
       logger.info("initialized successfully");
 
@@ -79,3 +99,5 @@ export async function initialize(options: WebOsOptions): Promise<WebOs> {
     }
   });
 }
+
+export { PANELS } from "./libs/panel-manager";
